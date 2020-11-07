@@ -1,4 +1,4 @@
-package lib
+package cstools
 
 import (
 	"github.com/go-redis/redis"
