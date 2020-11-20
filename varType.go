@@ -8,6 +8,7 @@ func Int64ToStr(target int64) string {
 
 func StrToInt(target string) (int, error) {
 	return strconv.Atoi(target)
+
 }
 
 func StrToInt64(target string) (int64, error) {

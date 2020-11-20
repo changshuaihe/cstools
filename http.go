@@ -2,13 +2,14 @@ package cstools
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 )
 
-func HttpGet(url string, headers map[string]string) string {
-	client := &http.Client{Timeout: 10 * time.Second}
+func HttpGet(url string, headers map[string]string) (string, error) {
+	client := &http.Client{Timeout: 30 * time.Second}
 	//生成要访问的url
 	//提交请求
 	reqest, err := http.NewRequest("GET", url, nil)
@@ -19,16 +20,24 @@ func HttpGet(url string, headers map[string]string) string {
 	}
 
 	if err != nil {
+		fmt.Println(url)
 		panic(err)
+		return "", err
 	}
 	//处理返回结果
-	response, _ := client.Do(reqest)
-	defer response.Body.Close()
-	respByte, _ := ioutil.ReadAll(response.Body)
-	return string(respByte)
+	response, err := client.Do(reqest)
+	if err != nil {
+		return "", err
+	}
+	respByte, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(respByte), err
 }
 
-func HttpPost(url string, data string, headers map[string]string) string {
+func HttpPost(url string, data string, headers map[string]string) (string, error) {
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	reqest, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(data)))
@@ -44,9 +53,10 @@ func HttpPost(url string, data string, headers map[string]string) string {
 	resp, error := client.Do(reqest)
 	if error != nil {
 		panic(error)
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	result, _ := ioutil.ReadAll(resp.Body)
-	return string(result)
+	return string(result), err
 }
