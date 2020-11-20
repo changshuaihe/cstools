@@ -6,9 +6,19 @@ import (
 )
 
 type Mgo struct {
-	DB         string
-	mgoSession *mango.Session
-	ThreadCtl  Thread
+	DB          string
+	mgoSession  *mango.Session
+	ThreadCtl   Thread
+	ThreadCount int
+	ServerIp    string
+	Port        string
+}
+
+type MgoGlobalConf struct {
+	ServerIp    string
+	Port        string
+	Password    string
+	ThreadCount int
 }
 
 //使用前初始化
@@ -16,10 +26,12 @@ type Mgo struct {
 //dataPoolMgo.InitMgo("data")
 //SyncGitPro(&dataPoolMgo)
 
-func (m *Mgo) InitMgo(dbName string, serverIp string, serverPort string, threadCount int) {
-	m.ThreadCtl.Init(threadCount)
+var GlobalMgoConf MgoGlobalConf
+
+func (m *Mgo) InitMgo(dbName string) {
+	m.ThreadCtl.Init(GlobalMgoConf.ThreadCount)
 	m.DB = dbName
-	m.mgoSession = mango.New("mongodb://" + serverIp + ":" + serverPort)
+	m.mgoSession = mango.New("mongodb://" + GlobalMgoConf.ServerIp + ":" + GlobalMgoConf.Port)
 	m.mgoSession.SetPoolLimit(1000)
 
 	if err := m.mgoSession.Connect(); err != nil {
