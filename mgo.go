@@ -14,9 +14,10 @@ type Mgo struct {
 	Port        string
 }
 
-type MgoGlobalConf struct {
+type mgoGlobalConf struct {
 	ServerIp    string
 	Port        string
+	UserName    string
 	Password    string
 	ThreadCount int
 }
@@ -26,12 +27,18 @@ type MgoGlobalConf struct {
 //dataPoolMgo.InitMgo("data")
 //SyncGitPro(&dataPoolMgo)
 
-var GlobalMgoConf MgoGlobalConf
+var GlobalMgoConf mgoGlobalConf
 
 func (m *Mgo) InitMgo(dbName string) {
 	m.ThreadCtl.Init(GlobalMgoConf.ThreadCount)
 	m.DB = dbName
-	m.mgoSession = mango.New("mongodb://" + GlobalMgoConf.ServerIp + ":" + GlobalMgoConf.Port)
+	auth := GlobalMgoConf.UserName + ":" + GlobalMgoConf.Password
+	if auth != ":" {
+		auth = auth + "@"
+	} else {
+		auth = ""
+	}
+	m.mgoSession = mango.New("mongodb://" + auth + GlobalMgoConf.ServerIp + ":" + GlobalMgoConf.Port + "/" + "admin" + "?authMechanism=SCRAM-SHA-1")
 	m.mgoSession.SetPoolLimit(1000)
 
 	if err := m.mgoSession.Connect(); err != nil {
