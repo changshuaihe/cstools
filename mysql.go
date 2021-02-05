@@ -21,11 +21,11 @@ func (mc *MysqlClient) InitConn() (err error) {
 	return err
 }
 
-func (mc *MysqlClient) QuerySql(SqlString string, args ...interface{}) ([]map[string]string, error) {
+func (mc *MysqlClient) QuerySql(SqlString string, args ...interface{}) *xorm.Session {
 	if len(args) > 0 {
-		return mc.Conn.SQL(SqlString, args...).QueryString()
+		return mc.Conn.SQL(SqlString, args...)
 	} else {
-		return mc.Conn.SQL(SqlString).QueryString()
+		return mc.Conn.SQL(SqlString)
 	}
 
 }
