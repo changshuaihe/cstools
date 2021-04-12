@@ -46,6 +46,22 @@ func (m *Mgo) InitMgo(dbName string) {
 	}
 }
 
+func (m *Mgo) InitMgoV2(mgoConf mgoGlobalConf) {
+	m.ThreadCtl.Init(mgoConf.ThreadCount)
+	auth := mgoConf.UserName + ":" + mgoConf.Password
+	if auth != ":" {
+		auth = auth + "@"
+	} else {
+		auth = ""
+	}
+	m.mgoSession = mango.New("mongodb://" + auth + mgoConf.ServerIp + ":" + mgoConf.Port + "/" + "admin" + "?authMechanism=SCRAM-SHA-1")
+	m.mgoSession.SetPoolLimit(1000)
+
+	if err := m.mgoSession.Connect(); err != nil {
+		fmt.Println(err)
+	}
+}
+
 func (m *Mgo) MgoInsertOne(col string, data interface{}) error {
 	m.ThreadCtl.Start()
 	err := m.mgoSession.DB(m.DB).Collection(col).Insert(data)
