@@ -23,7 +23,7 @@ func IsFileExist(filename string) bool {
 	return exist
 }
 
-func appendToFile(fileName string, content string) error {
+func AppendToFile(fileName string, content string) error {
 	// 以只写的模式，打开文件
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
@@ -37,4 +37,18 @@ func appendToFile(fileName string, content string) error {
 	}
 	defer f.Close()
 	return err
+}
+
+func WriteFile(path, content string) error {
+	f, err := os.OpenFile(path, os.O_WRONLY&os.O_CREATE, 0666)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.Write([]byte(content))
+	if err != nil {
+		return err
+	}
+	f.Close()
+	return nil
 }
