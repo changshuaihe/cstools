@@ -40,7 +40,7 @@ func AppendToFile(fileName string, content string) error {
 }
 
 func WriteFile(path, content string) error {
-	f, err := os.OpenFile(path, os.O_WRONLY&os.O_CREATE, 0666)
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return err
 	}
