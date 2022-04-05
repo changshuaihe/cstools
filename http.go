@@ -38,7 +38,7 @@ func HttpGet(url string, headers map[string]string) (string, error) {
 }
 
 func HttpPost(url string, data string, headers map[string]string) (string, error) {
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: 300 * time.Second}
 
 	reqest, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(data)))
 	//增加header选项
