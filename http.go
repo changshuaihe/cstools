@@ -9,7 +9,7 @@ import (
 )
 
 func HttpGet(url string, headers map[string]string) (string, error) {
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: 300 * time.Second}
 	//生成要访问的url
 	//提交请求
 	reqest, err := http.NewRequest("GET", url, nil)
